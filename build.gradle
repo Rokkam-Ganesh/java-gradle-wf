@@ -1,0 +1,108 @@
+// gradle commands
+// gradle build
+// gradle clean
+// gradle test
+// gradle run (with application plugin)
+//for wrapper use .\gradlew command
+plugins { // plugin for java build
+    id 'java'
+    id 'application'
+}
+
+// Lets you run the java code using gradle run
+application{
+    mainClass = 'com.practice.gradle.Main'
+}
+group = 'com.practice.gradle'
+version = '1.0-SNAPSHOT'
+
+// Leta you run the compiled jar file in /build/libs using java -jar build\libs\myfirstgradle-1.0-SNAPSHOT.jar (jar file name)
+// Similar to application but runs jar file
+jar{
+    manifest{ // Configuring tasks
+        attributes 'Main-Class':'com.practice.gradle.Main'
+    }
+}
+
+repositories { // Remote Repository for dependencies to download during execution
+    mavenCentral()
+    //jcenter()  deprecated
+    //google() for android development
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+//    implementation 'org.apache.commons:commons-lang3:3.12.0' // Main dependency
+//    testImplementation 'junit:junit:4.13.2'                 // Testing library
+//    runtimeOnly 'org.postgresql:postgresql:42.6.0'          // Runtime dependency
+//    api 'com.google.guava:guava:31.1-jre'          // Used with java-library plugin exposed to consumers
+//    compileTimeOnly 'org.postgresql:postgresql:42.6.0'
+//    compile 'org.postgresql:postgresql:42.6.0'
+
+//    configuration 'group:name:version'
+// Excluding transitive dependencies
+//    dependencies {
+//        implementation('com.google.guava:guava:31.1-jre') {
+//            exclude group: 'com.google.code.findbugs', module: 'jsr305'
+//        }
+//    }
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Practice Code
+
+// To execute gradle taskA
+tasks.register('taskA') {
+    doLast {
+        println 'Task A executed!'
+    }
+}
+
+// To execute gradle taskB also executes taskA
+tasks.register('taskB') {
+    dependsOn 'taskA' // TaskB depends on TaskA
+    doLast {
+        println 'Task B executed!'
+    }
+}
+
+// To Configure dependencies (here groups dependencies in common libs)
+configurations {
+    customLibs // Define a custom configuration
+}
+
+dependencies {
+    customLibs 'com.google.guava:guava:31.1-jre' // Add dependency to custom configuration
+}
+
+task printCustomLibs {
+    doLast {
+        configurations.customLibs.each { println it } // Print all files in customLibs
+    }
+}
+
+// Configuring the 'jar' task of java plugin
+tasks.named('jar') { // Customize the Jar task
+    archiveBaseName = 'my-custom-jar' // Change the JAR file name
+    archiveVersion = '2.0'           // Update the version
+}
+
+//Some Tasks
+//with i/o
+tasks.register('createFile') {
+    outputs.file 'output.txt' // Define output
+    doLast {
+        file('output.txt').text = 'Hello, Gradle!' // Write to a file
+    }
+}
+//with parameters  "gradle printMessage -Pmsg="Hello, World!""
+tasks.register('printMessage') {
+    doLast {
+        println project.hasProperty('msg') ? project.msg : 'No message provided'
+    }
+}

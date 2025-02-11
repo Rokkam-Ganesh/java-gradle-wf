@@ -1,0 +1,9 @@
+Try to Build a Application(Project) Using Gradle and next using Maven
+
+The build.gradle file is the heart of a Gradle project. It defines the build script using Groovy or Kotlin DSL. This script specifies:
+
+Plugins: Add functionality to your project.
+Dependencies: Define external libraries or modules needed.
+Tasks: Automate specific build operations.
+Repositories: Specify where to fetch dependencies from.
+Configurations: Customize the build process.
